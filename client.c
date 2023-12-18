@@ -6,7 +6,7 @@
 /*   By: romain <romain@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/11 20:14:16 by romain            #+#    #+#             */
-/*   Updated: 2023/12/12 00:52:05 by romain           ###   ########.fr       */
+/*   Updated: 2023/12/18 11:39:49 by romain           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,8 @@ int main(int ac, char **av)
 	s = av[2];
 	if (!pid)
 		return (1);
+	if (sigaction(SIGUSR1, &sa_action_1, NULL) == -1)
+		handle_errors("Failed to change SIGUSR1's behavior");
 	while(*s)
 		{
 			encoding_send(*(s++),pid);
