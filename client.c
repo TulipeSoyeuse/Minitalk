@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   client.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: romain <romain@student.42.fr>              +#+  +:+       +#+        */
+/*   By: rdupeux <rdupeux@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/11 20:14:16 by romain            #+#    #+#             */
-/*   Updated: 2023/12/24 22:32:56 by romain           ###   ########.fr       */
+/*   Updated: 2023/12/29 13:39:51 by rdupeux          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,7 @@ int	main(int ac, char **av)
 	while (*s)
 	{
 		encoding_send(*(s++), pid);
-		usleep(50);
+		usleep(WAIT_TIME);
 	}
 	encoding_send(0, pid);
 	sleep(10);
