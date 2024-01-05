@@ -1,32 +1,36 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   client.c                                           :+:      :+:    :+:   */
+/*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: romain <romain@student.42.fr>              +#+  +:+       +#+        */
+/*   By: rdupeux <rdupeux@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/12/11 20:14:16 by romain            #+#    #+#             */
-/*   Updated: 2024/01/05 21:03:54 by romain           ###   ########.fr       */
+/*   Created: 2023/12/11 20:13:57 by romain            #+#    #+#             */
+/*   Updated: 2023/12/29 13:40:12 by rdupeux          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minitalk.h"
 
-int	main(int ac, char **av)
+void	encoding_send(int c, pid_t pid)
 {
-	char	*s;
-	pid_t	pid;
+	int	bits;
 
-	if (ac != 3)
-		return (1);
-	pid = ft_atoi(av[1]);
-	s = av[2];
-	if (!pid)
-		return (1);
-	while (*s)
+	bits = 8;
+	while (bits--)
 	{
-		encoding_send(*(s++), pid);
+		if (c & 0b10000000)
+			kill(pid, SIGUSR1);
+		else
+			kill(pid, SIGUSR2);
+		c <<= 1;
+		usleep(WAIT_TIME);
 	}
-	encoding_send(0, pid);
-	return (0);
+
+}
+
+void	handle_errors(char *s)
+{
+	ft_putstr_fd(s, 2);
+	exit(0);
 }

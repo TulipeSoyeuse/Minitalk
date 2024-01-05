@@ -1,23 +1,24 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   server.c                                           :+:      :+:    :+:   */
+/*   server_bonus.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: romain <romain@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/11 21:53:27 by romain            #+#    #+#             */
-/*   Updated: 2024/01/05 21:19:52 by romain           ###   ########.fr       */
+/*   Updated: 2024/01/05 21:16:52 by romain           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minitalk.h"
 
-void	sa_reader(int signum)
+void	sa_reader(int signum, siginfo_t *info, void *context)
 {
 	static int	cnt = 8;
 	static char	v = 0;
 
 	cnt--;
+	(void) context ;
 	if (signum == SIGUSR1)
 	{
 		v <<= 1;
@@ -28,7 +29,10 @@ void	sa_reader(int signum)
 	if (!cnt)
 	{
 		cnt = 8;
-		write(1, &v, 1);
+		if (v == 0)
+			kill(info->si_pid, SIGUSR1);
+		else
+			write(1, &v, 1);
 		v = 0;
 	}
 }
@@ -38,8 +42,8 @@ void	setup_action(void)
 	struct sigaction	sa_action_1;
 
 	sigemptyset(&sa_action_1.sa_mask);
-	sa_action_1.sa_handler = sa_reader;
-	sa_action_1.sa_flags = 0;
+	sa_action_1.sa_sigaction = sa_reader;
+	sa_action_1.sa_flags = SA_SIGINFO;
 	if (sigaction(SIGUSR1, &sa_action_1, NULL) == -1)
 		handle_errors("Failed to change SIGUSR1's behavior");
 	if (sigaction(SIGUSR2, &sa_action_1, NULL) == -1)
